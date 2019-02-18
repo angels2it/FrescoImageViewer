@@ -30,8 +30,12 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
+import com.facebook.drawee.backends.pipeline.DraweeConfig;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.stfalcon.frescoimageviewer.imageformat.CustomImageFormatConfigurator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +51,18 @@ public class ImageViewer implements OnDismissListener, DialogInterface.OnKeyList
     private Builder builder;
     private AlertDialog dialog;
     private ImageViewerView viewer;
+
+    public static void Init(Context context) {
+        ImagePipelineConfig imagePipelineConfig = ImagePipelineConfig.newBuilder(context)
+                .setImageDecoderConfig(CustomImageFormatConfigurator.createImageDecoderConfig())
+                .build();
+
+
+        DraweeConfig.Builder draweeConfigBuilder = DraweeConfig.newBuilder();
+        CustomImageFormatConfigurator.addCustomDrawableFactories(draweeConfigBuilder);
+
+        Fresco.initialize(context, imagePipelineConfig, draweeConfigBuilder.build());
+    }
 
     protected ImageViewer(Builder builder) {
         this.builder = builder;
